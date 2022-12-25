@@ -1,8 +1,17 @@
 import React from "react";
 import BasicCard from "./CardComponents/BasicCard";
 import ProgressCard from "./CardComponents/ProgressCard";
+import Table from "react-bootstrap/Table";
+import Button from 'react-bootstrap/Button';
+import { useNavigate } from "react-router-dom";
 
-function Dashboard({ data }) {
+function Dashboard({ data, users , setUsers}) {
+  let navigate = useNavigate();
+  let handleDelete= (i)=>{
+    let newArray = [...users] //deep copy the main array
+    newArray.splice(i,1)  //delete the element in the new array
+    setUsers(newArray)  //update the new array to the state function
+  };
   return (
     <div id="content-wrapper" className="d-flex flex-column">
       {/* <!-- Main Content --> */}
@@ -49,6 +58,39 @@ function Dashboard({ data }) {
             />
           </div>
         </div>
+        <Table striped bordered hover size="sm">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Batch</th>
+              <th>Timings</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((e, i) => {
+              return (
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>{e.name}</td>
+                  <td>{e.email}</td>
+                  <td>{e.mobile}</td>
+                  <td>{e.batch}</td>
+                  <td>{e.timings}</td>
+                  <td>
+                    <Button variant="primary" onClick={()=>navigate(`/edit-user/${i}`)}><i className="fas fa-pen-to-square">&nbsp;</i>Edit</Button>
+                      &nbsp;
+                      &nbsp;
+                    <Button variant="danger" onClick={()=>handleDelete(i)}><i className="fas fa-trash">&nbsp;</i>Delete</Button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
       </div>
     </div>
   );
